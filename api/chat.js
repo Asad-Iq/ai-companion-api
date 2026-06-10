@@ -13,7 +13,9 @@ export default async function handler(req, res) {
   // 3. Ensure we only process POST requests
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { messages } = JSON.parse(req.body);
+  // Check if it's already an object (Vercel) or still a string, to be totally bulletproof
+const payload = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+const { messages } = payload;
 
   const geminiContents = messages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
